@@ -19,5 +19,5 @@ btnalert2.addEventListener("click", ()=>{
 })
 
 btnclose2.addEventListener("click", ()=>{
-  alert.classList.add("hidden");
+  alert2.classList.add("hidden");
 })
