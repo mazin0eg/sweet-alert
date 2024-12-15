@@ -3,26 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
+    
     <title>Document</title>
 </head>
-<body class="flex justify-center items-center	 h-[100%] gap-2 flex-col">
-   
+<body >
+
+<style>
+    /* Custom Alert Styles */
+.custom-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s;
+}
+
+.custom-alert-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 300px;
+}
+
+.custom-alert-box h2 {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.custom-alert-box p {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.custom-alert-buttons {
+  margin-top: 15px;
+}
+
+.custom-alert-buttons button {
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.custom-alert-buttons .confirm {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.custom-alert-buttons .cancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* Show the alert */
+.custom-alert-overlay.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Alert Library</title>
+  <link rel="stylesheet" href="custom-alerts.css"> 
+  <script src="custom-alerts.js" defer></script> 
+</head>
+<body>
+  <h1>Custom Alert Library</h1>
+  <button onclick="CustomAlerts.showBasicAlert('Hello, Mazine!', 'This is a basic alert.', 'info')">Basic Alert</button>
+  <button onclick="CustomAlerts.showSuccessAlert('Great!', 'Operation completed successfully.')">Success Alert</button>
+  <button onclick="CustomAlerts.showErrorAlert('Oops!', 'Something went wrong.')">Error Alert</button>
+  <button onclick="CustomAlerts.showConfirmAlert('Are you sure?', 'This action cannot be undone.', () => alert('Confirmed!'))">Confirmation Alert</button>
+</body>
+</html>
+
+
+
+
+<script>
+ 
+const CustomAlerts = {
+ 
+  createAlertBox(title, message, buttons) {
+  
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
+
+ 
+    const alertBox = document.createElement('div');
+    alertBox.className = 'custom-alert-box';
+
     
-    <button id="add" class="border border-gray-300 bg-green-100 text-gray-700 font-medium h-10 w-20 rounded-md hover:bg-gray-200 hover:shadow-sm transition duration-200" > add</button>
-    <div id="alert" class="hidden h-[16em] w-[30em] border-2 border-green-300 shadow-lg bg-white flex justify-center items-center flex-col rounded-md space-y-4 p-6">
-        <span class="text-gray-800 font-semibold text-lg">piw piw piw sucsec</span>
-        <button id="close" class="border border-gray-300 bg-gray-100 text-gray-700 font-medium h-10 w-20 rounded-md hover:bg-gray-200 hover:shadow-sm transition duration-200">Close</button>
-    </div>
+    const alertTitle = document.createElement('h2');
+    alertTitle.textContent = title;
+    alertBox.appendChild(alertTitle);
+
+    const alertMessage = document.createElement('p');
+    alertMessage.textContent = message;
+    alertBox.appendChild(alertMessage);
+
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'custom-alert-buttons';
+    buttons.forEach((btn) => buttonsContainer.appendChild(btn));
+    alertBox.appendChild(buttonsContainer);
+
+   
+    overlay.appendChild(alertBox);
+    document.body.appendChild(overlay);
+
+   
+    setTimeout(() => {
+      overlay.classList.add('visible');
+    }, 10);
+
+   
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        this.closeAlert(overlay);
+      }
+    });
+
+    return overlay;
+  },
+
+  
+  closeAlert(overlay) {
+    overlay.classList.remove('visible');
+    setTimeout(() => {
+      document.body.removeChild(overlay);
+    }, 300);
+  },
+
+  showBasicAlert(title, message, type) {
+    const confirmBtn = this.createButton('OK', 'confirm', () => {
+      this.closeAlert(overlay);
+    });
+
+    const overlay = this.createAlertBox(title, message, [confirmBtn]);
+  },
+
+ 
+  showSuccessAlert(title, message) {
+    this.showBasicAlert(title, message, 'success');
+  },
+
+ 
+  showErrorAlert(title, message) {
+    this.showBasicAlert(title, message, 'error');
+  },
+
+  showConfirmAlert(title, message, onConfirm) {
+    const confirmBtn = this.createButton('Yes', 'confirm', () => {
+      onConfirm();
+      this.closeAlert(overlay);
+    });
+
+    const cancelBtn = this.createButton('No', 'cancel', () => {
+      this.closeAlert(overlay);
+    });
+
+    const overlay = this.createAlertBox(title, message, [confirmBtn, cancelBtn]);
+  },
+
+  createButton(text, className, onClick) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.className = className;
+    button.addEventListener('click', onClick);
+    return button;
+  },
+};
+
+
+  
+</script>
 
 
 
-    <button id="add-error" class="border border-gray-300 bg-red-100 text-gray-700 font-medium h-10 w-20 rounded-md hover:bg-gray-200 hover:shadow-sm transition duration-200" > add</button>
-    <div id="alert-error" class="hidden h-[16em] w-[30em] border-2 border-red-300 shadow-lg bg-white flex justify-center items-center flex-col rounded-md space-y-4 p-6">
-        <span class="text-gray-800 font-semibold text-lg">piw piw piw error</span>
-        <button id="close-error" class="border border-gray-300 bg-gray-100 text-gray-700 font-medium h-10 w-20 rounded-md hover:bg-gray-200 hover:shadow-sm transition duration-200">Close</button>
-    </div>
+
     
 </body>
-<script src="script.js"></script>
+
 </html>
